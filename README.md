@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CollegeDiscovery
+
+A production-grade college discovery and decision-making platform built with Next.js 15, React 18, TypeScript, TailwindCSS, PostgreSQL, and Prisma ORM.
+
+## Features
+
+- **College Listing + Search** — Full-text search with filters (state, type, ownership, fees range, min rating), sorting, and pagination
+- **College Detail Page** — Tabbed UI with Overview, Courses table, Placement stats, and Student Reviews
+- **Compare Colleges** — Side-by-side comparison of up to 3 colleges with winner highlighting (fees, packages, placement rate, NIRF rank, facilities checklist)
+- **Authentication** — Email/password signup & login with NextAuth.js (JWT sessions)
+- **Saved Colleges** — Bookmark colleges to a personal shortlist, filter within saved list
+
+## Tech Stack
+
+| Layer      | Technology                          |
+|------------|-------------------------------------|
+| Frontend   | Next.js 15 (App Router), React 18, TypeScript |
+| Styling    | TailwindCSS, Lucide Icons           |
+| Auth       | NextAuth.js v4 (Credentials)        |
+| Database   | PostgreSQL (Neon recommended)       |
+| ORM        | Prisma 5                            |
+| Deployment | Vercel (frontend) + Neon (DB)       |
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone and install
+
+```bash
+git clone <repo-url>
+cd college-discovery
+npm install
+```
+
+### 2. Configure environment
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
+- `DATABASE_URL` — your PostgreSQL connection string (get from [neon.tech](https://neon.tech))
+- `NEXTAUTH_SECRET` — generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`
+- `NEXTAUTH_URL` — `http://localhost:3000` for local dev
+
+### 3. Set up the database
+
+```bash
+npx prisma generate
+npx prisma db push
+npm run db:seed
+```
+
+### 4. Run development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Demo account
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+After seeding, log in with:
+- **Email:** `demo@collegediscovery.in`
+- **Password:** `demo@1234`
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+college-discovery/
+├── app/
+│   ├── api/               # API routes
+│   │   ├── auth/          # NextAuth + register
+│   │   ├── colleges/      # List, detail, compare
+│   │   ├── saved/         # Save/unsave toggle
+│   │   └── reviews/       # Submit reviews
+│   ├── colleges/          # /colleges listing + /colleges/[slug]
+│   ├── compare/           # Compare page
+│   ├── saved/             # Saved shortlist (protected)
+│   ├── auth/              # Login + register pages
+│   └── page.tsx           # Homepage
+├── components/
+│   ├── ui/                # Button, Card, Badge, Input, Select, Modal, Skeleton, StarRating
+│   ├── layout/            # Navbar, Footer
+│   ├── colleges/          # CollegeCard, CollegeFiltersPanel, CollegeDetailView, etc.
+│   ├── compare/           # CompareTable, CollegeSearchPicker
+│   ├── saved/             # SavedCollegesView
+│   └── auth/              # LoginForm, RegisterForm
+├── context/
+│   └── CompareContext.tsx # Global compare state (up to 3 colleges)
+├── lib/
+│   ├── prisma.ts          # Singleton Prisma client
+│   ├── auth.ts            # NextAuth options
+│   ├── types.ts           # Shared TypeScript interfaces
+│   └── utils.ts           # cn, formatFees, formatPackage, etc.
+└── prisma/
+    ├── schema.prisma      # Database schema
+    └── seed.ts            # 12 realistic Indian colleges
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Vercel + Neon
 
-## Deploy on Vercel
+1. Push to GitHub
+2. Import project on [vercel.com](https://vercel.com)
+3. Add environment variables in Vercel dashboard
+4. Run `npx prisma db push` and `npm run db:seed` against your Neon DB once
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Seed Data
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+12 colleges seeded including IIT Bombay, IIT Delhi, IIT Madras, BITS Pilani, IIM Ahmedabad, AIIMS Delhi, NLS Bangalore, VIT, Manipal, Delhi University, Jadavpur University, and Symbiosis — each with courses, placement stats, facilities, and a sample review.
