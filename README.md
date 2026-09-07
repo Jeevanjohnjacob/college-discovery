@@ -1,112 +1,332 @@
-# CollegeDiscovery
+# 🎓 CollegeDiscovery
 
-A production-grade college discovery and decision-making platform built with Next.js 15, React 18, TypeScript, TailwindCSS, PostgreSQL, and Prisma ORM.
+A full-stack college discovery platform that helps students **search, explore, compare, and shortlist colleges across India**.
 
-## Features
+Built as a production-oriented MVP using Next.js, TypeScript, TailwindCSS, Prisma, PostgreSQL, and NextAuth.js.
 
-- **College Listing + Search** — Full-text search with filters (state, type, ownership, fees range, min rating), sorting, and pagination
-- **College Detail Page** — Tabbed UI with Overview, Courses table, Placement stats, and Student Reviews
-- **Compare Colleges** — Side-by-side comparison of up to 3 colleges with winner highlighting (fees, packages, placement rate, NIRF rank, facilities checklist)
-- **Authentication** — Email/password signup & login with NextAuth.js (JWT sessions)
-- **Saved Colleges** — Bookmark colleges to a personal shortlist, filter within saved list
+## 🚀 Live Demo
 
-## Tech Stack
+**Live Application:**  
+https://college-discovery-silk.vercel.app
 
-| Layer      | Technology                          |
-|------------|-------------------------------------|
-| Frontend   | Next.js 15 (App Router), React 18, TypeScript |
-| Styling    | TailwindCSS, Lucide Icons           |
-| Auth       | NextAuth.js v4 (Credentials)        |
-| Database   | PostgreSQL (Neon recommended)       |
-| ORM        | Prisma 5                            |
-| Deployment | Vercel (frontend) + Neon (DB)       |
+**GitHub Repository:**  
+https://github.com/Jeevanjohnjacob/college-discovery
 
-## Getting Started
+---
 
-### 1. Clone and install
+## ✨ Features
 
-```bash
-git clone <repo-url>
-cd college-discovery
-npm install
-```
+### 🔎 1. College Listing & Search
 
-### 2. Configure environment
+- Search colleges by name and relevant information
+- Filter colleges by:
+  - State
+  - Institution type
+  - Ownership
+  - Fees
+  - Minimum rating
+- Sorting support
+- Pagination
+- Responsive college cards
+- Empty-state handling
 
-```bash
-cp .env.example .env.local
-```
+### 🏫 2. College Details
 
-Edit `.env.local`:
-- `DATABASE_URL` — your PostgreSQL connection string (get from [neon.tech](https://neon.tech))
-- `NEXTAUTH_SECRET` — generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`
-- `NEXTAUTH_URL` — `http://localhost:3000` for local dev
+Each college has a dedicated detail page containing:
 
-### 3. Set up the database
+- College overview
+- Courses offered
+- Fee information
+- Placement statistics
+- Student reviews
+- Facilities
+- College-specific information
 
-```bash
-npx prisma generate
-npx prisma db push
-npm run db:seed
-```
+### ⚖️ 3. Compare Colleges
 
-### 4. Run development server
+Compare up to **3 colleges side-by-side**.
 
-```bash
-npm run dev
-```
+Comparison includes:
 
-Open [http://localhost:3000](http://localhost:3000).
+- Fees
+- Placement packages
+- Placement rate
+- NIRF ranking
+- Facilities
+- Winner highlighting for important metrics
 
-### Demo account
+The comparison state is maintained across navigation using a shared React context.
 
-After seeding, log in with:
-- **Email:** `demo@collegediscovery.in`
-- **Password:** `demo@1234`
+### 🔐 4. Authentication & Saved Colleges
 
-## Project Structure
+- User registration
+- Email/password login
+- NextAuth.js authentication
+- JWT-based sessions
+- Protected saved-college functionality
+- Save/unsave colleges
+- Personal shortlist of saved colleges
 
-```
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 15, React 18, TypeScript |
+| Styling | TailwindCSS |
+| Icons | Lucide Icons |
+| Backend | Next.js API Routes |
+| Authentication | NextAuth.js v4 |
+| ORM | Prisma 5 |
+| Database | PostgreSQL |
+| Database Hosting | Neon |
+| Deployment | Vercel |
+
+---
+
+## 🏗️ Architecture
+
+The application follows a full-stack Next.js architecture.
+
+```text
+                    ┌──────────────────────┐
+                    │      User / UI       │
+                    │ Next.js + React + TS │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │   Next.js App Router │
+                    │     Pages / UI       │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │    API Routes        │
+                    │ Colleges / Auth /    │
+                    │ Saved / Reviews      │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │       Prisma         │
+                    │         ORM          │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │   PostgreSQL / Neon  │
+                    └──────────────────────┘
+
+                    Authentication
+                    ───────────────
+                       NextAuth.js
+                           │
+                           ▼
+                     JWT Sessions
+
+📁 Project Structure
+
 college-discovery/
+│
 ├── app/
-│   ├── api/               # API routes
-│   │   ├── auth/          # NextAuth + register
-│   │   ├── colleges/      # List, detail, compare
-│   │   ├── saved/         # Save/unsave toggle
-│   │   └── reviews/       # Submit reviews
-│   ├── colleges/          # /colleges listing + /colleges/[slug]
-│   ├── compare/           # Compare page
-│   ├── saved/             # Saved shortlist (protected)
-│   ├── auth/              # Login + register pages
-│   └── page.tsx           # Homepage
+│   ├── api/
+│   │   ├── auth/              # Authentication & registration
+│   │   ├── colleges/          # College APIs
+│   │   ├── saved/             # Save / unsave colleges
+│   │   └── reviews/           # Review APIs
+│   │
+│   ├── colleges/
+│   │   ├── page.tsx           # College listing
+│   │   └── [slug]/            # College detail page
+│   │
+│   ├── compare/               # College comparison
+│   ├── saved/                 # Saved colleges
+│   ├── auth/                  # Login & registration
+│   └── page.tsx               # Homepage
+│
 ├── components/
-│   ├── ui/                # Button, Card, Badge, Input, Select, Modal, Skeleton, StarRating
-│   ├── layout/            # Navbar, Footer
-│   ├── colleges/          # CollegeCard, CollegeFiltersPanel, CollegeDetailView, etc.
-│   ├── compare/           # CompareTable, CollegeSearchPicker
-│   ├── saved/             # SavedCollegesView
-│   └── auth/              # LoginForm, RegisterForm
+│   ├── ui/                    # Reusable UI components
+│   ├── layout/                # Navbar & Footer
+│   ├── colleges/              # College components
+│   ├── compare/               # Comparison components
+│   ├── saved/                 # Saved college components
+│   └── auth/                  # Authentication components
+│
 ├── context/
-│   └── CompareContext.tsx # Global compare state (up to 3 colleges)
+│   └── CompareContext.tsx     # Global comparison state
+│
 ├── lib/
-│   ├── prisma.ts          # Singleton Prisma client
-│   ├── auth.ts            # NextAuth options
-│   ├── types.ts           # Shared TypeScript interfaces
-│   └── utils.ts           # cn, formatFees, formatPackage, etc.
-└── prisma/
-    ├── schema.prisma      # Database schema
-    └── seed.ts            # 12 realistic Indian colleges
-```
+│   ├── prisma.ts              # Prisma client
+│   ├── auth.ts                # NextAuth configuration
+│   ├── types.ts               # Shared TypeScript types
+│   └── utils.ts               # Utility functions
+│
+├── prisma/
+│   ├── schema.prisma          # Database schema
+│   └── seed.ts                # Seed data
+│
+├── public/                    # Static assets
+├── package.json
+├── next.config.ts
+├── tailwind.config.ts
+└── vercel.json
 
-## Deployment
 
-### Vercel + Neon
+🗄️ Database
 
-1. Push to GitHub
-2. Import project on [vercel.com](https://vercel.com)
-3. Add environment variables in Vercel dashboard
-4. Run `npx prisma db push` and `npm run db:seed` against your Neon DB once
+The application uses PostgreSQL with Prisma ORM.
 
-## Seed Data
+The database contains relational data for:
 
-12 colleges seeded including IIT Bombay, IIT Delhi, IIT Madras, BITS Pilani, IIM Ahmedabad, AIIMS Delhi, NLS Bangalore, VIT, Manipal, Delhi University, Jadavpur University, and Symbiosis — each with courses, placement stats, facilities, and a sample review.
+Users
+Colleges
+Courses
+Reviews
+Saved colleges
+
+The Prisma schema provides a structured relationship between colleges, courses, reviews, and authenticated users.
+
+The development database is hosted using Neon PostgreSQL.
+
+🔑 Environment Variables
+
+Create a .env.local file:
+
+DATABASE_URL=your_postgresql_connection_string
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+
+For production, these variables are configured securely through Vercel Environment Variables.
+
+Never commit .env or .env.local to Git.
+
+⚙️ Getting Started
+1. Clone the repository
+git clone https://github.com/Jeevanjohnjacob/college-discovery.git
+cd college-discovery
+2. Install dependencies
+npm install
+3. Configure environment variables
+
+Create .env.local with:
+
+DATABASE_URL=your_postgresql_connection_string
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+4. Generate Prisma Client
+npx prisma generate
+5. Push the database schema
+npx prisma db push
+6. Seed the database
+npm run db:seed
+7. Start the development server
+npm run dev
+
+Open:
+
+http://localhost:3000
+🧪 Key User Flows
+Discover
+Homepage
+   ↓
+Search / Filter
+   ↓
+College Listing
+   ↓
+College Details
+Compare
+College Listing
+   ↓
+Select Colleges
+   ↓
+Compare
+   ↓
+Side-by-Side Comparison
+Save
+College Details
+   ↓
+Sign In
+   ↓
+Save College
+   ↓
+Saved Colleges
+🛡️ Edge Cases Considered
+
+The application handles common user scenarios including:
+
+Empty search results
+Invalid college routes
+Empty saved-college lists
+Authentication-required actions
+Invalid login credentials
+College comparison limits
+Missing or incomplete college information
+Responsive layouts across screen sizes
+🎯 Design Decisions & Tradeoffs
+Next.js App Router
+
+Next.js provides both the frontend and backend API layer in a single application, reducing unnecessary infrastructure for an MVP.
+
+Prisma
+
+Prisma provides type-safe database access and makes the PostgreSQL data model easier to maintain.
+
+PostgreSQL
+
+A relational database is suitable because colleges, courses, reviews, users, and saved colleges have clear relationships.
+
+NextAuth.js
+
+NextAuth provides session management and authentication without requiring a separate authentication backend.
+
+Neon + Vercel
+
+Neon provides managed PostgreSQL while Vercel provides convenient deployment for the Next.js application.
+
+📊 Seed Data
+
+The project includes realistic seed data for Indian colleges with information such as:
+
+College details
+Courses
+Fees
+Placement statistics
+Facilities
+Rankings
+Student reviews
+
+This allows the application to demonstrate its complete functionality immediately after setup.
+
+🔮 Future Improvements
+
+Potential future enhancements include:
+
+College recommendation / predictor system
+AI-powered college Q&A
+More advanced ranking and filtering
+User profile customization
+More detailed placement analytics
+College admission deadline tracking
+Mobile-first improvements
+Automated testing and CI/CD
+👨‍💻 Project
+
+Built as a full-stack frontend engineering project demonstrating:
+
+Modern React development
+TypeScript
+Responsive UI design
+REST-style API routes
+Database integration
+Authentication
+State management
+Production deployment
+
+Live Demo: https://college-discovery-silk.vercel.app
+
+Repository: https://github.com/Jeevanjohnjacob/college-discovery
+
+
+
